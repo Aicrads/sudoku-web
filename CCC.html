@@ -8,7 +8,6 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -44,7 +43,7 @@
             margin: 20px auto;
             border: 2px solid #333;
             background-color: #333;
-            width: fit-content; /* Added to prevent overflow */
+            width: fit-content;
         }
         
         .cell {
@@ -120,22 +119,6 @@
             background-color: #357abd;
         }
         
-        .validate {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .validate:hover {
-            background-color: #27ae60;
-        }
-        
-        .success {
-            color: #2ecc71;
-        }
-        
-        .error {
-            color: #e74c3c;
-        }
         
         @media (max-width: 500px) {
             .sudoku-board {
@@ -176,7 +159,6 @@
                 return Array(9).fill().map(() => Array(9).fill(0));
             },
             
-            // Generate a new Sudoku puzzle with a given difficulty
             generatePuzzle: function(difficulty = 'easy') {
                 // Start with an empty board
                 let board = this.createEmptyBoard();
@@ -195,7 +177,6 @@
                 // Remove numbers based on difficulty
                 let cellsToRemove;
                 switch(difficulty) {
-                    case 'easy': cellsToRemove = 30; break;
                     default: cellsToRemove = 30;
                 }
                 
@@ -256,7 +237,7 @@
                 return true;
             },
             
-            // Solve the Sudoku using backtracking
+            // Solve the Sudoku 
             solve: function(board) {
                 for (let row = 0; row < 9; row++) {
                     for (let col = 0; col < 9; col++) {
@@ -280,43 +261,7 @@
             },
             
             // Check the entire board
-            validateBoard: function(board) {
-                // Check all rows
-                for (let row = 0; row < 9; row++) {
-                    const rowSet = new Set();
-                    for (let col = 0; col < 9; col++) {
-                        const num = board[row][col];
-                        if (num !== 0 && rowSet.has(num)) return false;
-                        rowSet.add(num);
-                    }
-                }
-                
-                // Check all columns
-                for (let col = 0; col < 9; col++) {
-                    const colSet = new Set();
-                    for (let row = 0; row < 9; row++) {
-                        const num = board[row][col];
-                        if (num !== 0 && colSet.has(num)) return false;
-                        colSet.add(num);
-                    }
-                }
-                
-                // Check all 3x3 boxes
-                for (let boxRow = 0; boxRow < 3; boxRow++) {
-                    for (let boxCol = 0; boxCol < 3; boxCol++) {
-                        const boxSet = new Set();
-                        for (let y = 0; y < 3; y++) {
-                            for (let x = 0; x < 3; x++) {
-                                const num = board[boxRow * 3 + y][boxCol * 3 + x];
-                                if (num !== 0 && boxSet.has(num)) return false;
-                                boxSet.add(num);
-                            }
-                        }
-                    }
-                }
-                
-                return true;
-            },
+            
             
             // Check if the board is complete
             isBoardComplete: function(board) {
@@ -395,16 +340,6 @@
                 }
             },
             
-            validateBoard: function() {
-                if (sudoku.isBoardComplete(this.board)) {
-                    this.updateStatus('Puzzle solved', 'success');
-                } else if (sudoku.validateBoard(this.board)) {
-                    this.updateStatus('valid');
-                } else {
-                    this.updateStatus('ERROR.', 'error');
-                }
-            },
-            
             updateStatus: function(message, type = '') {
                 const statusElement = document.getElementById('status');
                 statusElement.textContent = message;
@@ -418,10 +353,6 @@
                 document.getElementById('newGameBtn').addEventListener('click', () => {
                     this.generateNewGame();
                 });
-                
-                document.getElementById('validateBtn').addEventListener('click', () => {
-                    this.validateBoard();
-                });
             }
         };
 
@@ -431,6 +362,4 @@
         });
     </script>
 </body>
-</html>#   s u d o k u - w e b 
- 
- 
+</html>
