@@ -92,13 +92,7 @@
             border-bottom: 2px solid #333;
         }
         
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-        }
+
         
         button {
             padding: 10px 20px;
@@ -146,7 +140,6 @@
         
         <div class="controls">
             <button id="newGameBtn" class="new-game">New Game</button>
-            <button id="validateBtn" class="validate">Check</button>
         </div>
         
         <div id="status" class="status"></div>
@@ -159,7 +152,7 @@
                 return Array(9).fill().map(() => Array(9).fill(0));
             },
             
-            generatePuzzle: function(difficulty = 'easy') {
+            generatePuzzle: function(difficulty = '') {
                 // Start with an empty board
                 let board = this.createEmptyBoard();
                 
@@ -174,13 +167,13 @@
                 // Store the solution
                 const solution = board.map(row => [...row]);
                 
-                // Remove numbers based on difficulty
+                // how many removed numbers
                 let cellsToRemove;
                 switch(difficulty) {
                     default: cellsToRemove = 30;
                 }
                 
-                // Remove numbers
+                // Remove numbers randomly
                 let removed = 0;
                 while (removed < cellsToRemove) {
                     const row = Math.floor(Math.random() * 9);
@@ -261,7 +254,43 @@
             },
             
             // Check the entire board
-            
+            validateBoard: function(board) {
+                // Check all rows
+                for (let row = 0; row < 9; row++) {
+                    const rowSet = new Set();
+                    for (let col = 0; col < 9; col++) {
+                        const num = board[row][col];
+                        if (num !== 0 && rowSet.has(num)) return false;
+                        rowSet.add(num);
+                    }
+                }
+                
+                // Check all columns
+                for (let col = 0; col < 9; col++) {
+                    const colSet = new Set();
+                    for (let row = 0; row < 9; row++) {
+                        const num = board[row][col];
+                        if (num !== 0 && colSet.has(num)) return false;
+                        colSet.add(num);
+                    }
+                }
+                
+                // Check all 3x3 boxes
+                for (let boxRow = 0; boxRow < 3; boxRow++) {
+                    for (let boxCol = 0; boxCol < 3; boxCol++) {
+                        const boxSet = new Set();
+                        for (let y = 0; y < 3; y++) {
+                            for (let x = 0; x < 3; x++) {
+                                const num = board[boxRow * 3 + y][boxCol * 3 + x];
+                                if (num !== 0 && boxSet.has(num)) return false;
+                                boxSet.add(num);
+                            }
+                        }
+                    }
+                }
+                
+                return true;
+            },
             
             // Check if the board is complete
             isBoardComplete: function(board) {
@@ -285,7 +314,7 @@
             },
             
             generateNewGame: function() {
-                const { puzzle } = sudoku.generatePuzzle('easy');
+                const { puzzle } = sudoku.generatePuzzle('');
                 this.board = puzzle.map(row => [...row]);
                 this.initialBoard = puzzle.map(row => [...row]);
                 this.renderBoard();
